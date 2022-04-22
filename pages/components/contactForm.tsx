@@ -37,6 +37,7 @@ const ContactForm = () => {
     return errors;
   };
 
+  // @ts-ignore
   return (
     <Box p={5} shadow="md" borderWidth="1px">
       <Center>
