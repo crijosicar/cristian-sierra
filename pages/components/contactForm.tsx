@@ -1,16 +1,13 @@
 import {
   Box,
   Button,
-  Center,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Heading,
   Input,
   Textarea,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import Social from "./social";
 
 interface ContactFormFields {
   email: string;
@@ -37,18 +34,8 @@ const ContactForm = () => {
     return errors;
   };
 
-  // @ts-ignore
   return (
-    <Box p={5} shadow="md" borderWidth="1px">
-      <Center>
-        {" "}
-        <Heading fontSize="xl">Ping me in</Heading>
-      </Center>
-      <Box height={"20px"}></Box>
-      <Social />
-      <Box height={"20px"}></Box>
-      <Center>Or</Center>
-      <Box height={"20px"}></Box>
+    <Box p={5}>
       <Formik
         validate={onValidate}
         initialValues={initialValues}

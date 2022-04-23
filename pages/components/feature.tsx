@@ -1,21 +1,23 @@
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, Heading, Link, Text } from "@chakra-ui/react";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 
-interface FeaturePage {
+interface WorkItemPage {
   title: string;
   desc: string;
-
-  [index: string]: any;
 }
 
-const Feature = ({ title, desc, ...rest }: FeaturePage) => {
+const WorkItem = ({ title, desc }: WorkItemPage) => {
   return (
-    <Box p={5} shadow="md" borderWidth="1px" {...rest}>
-      <Heading as="a" color="teal.400" href="#" fontWeight="bold" fontSize="xl">
+    <Box p={5}>
+      <Heading color="teal.400" fontWeight="bold" fontSize="xl">
         {title}
       </Heading>
       <Text mt={4}>{desc}</Text>
+      <Link color="teal.400" href={`/work/${title.toLocaleLowerCase()}`}>
+        More <ArrowForwardIcon />
+      </Link>
     </Box>
   );
 };
 
-export default Feature;
+export default WorkItem;

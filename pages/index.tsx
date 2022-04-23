@@ -2,8 +2,10 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { Box, Container, Heading, Link, Stack, Text } from "@chakra-ui/react";
 import Feature from "./components/feature";
-import ContactForm from "./components/contactForm";
 import { useRouter } from "next/router";
+import Social from "./components/social";
+import GetResumeBtn from "./components/resume";
+import ContactForm from "./components/contactForm";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -21,22 +23,23 @@ const Home: NextPage = () => {
       <Heading size="4xl">
         Hi, I am{" "}
         <Link color="teal.500" onClick={() => router.push("/about")}>
-          Cristian Sierra
+          Cristian Sierra.
         </Link>
       </Heading>
       <Box height={"20px"}></Box>
       <Text fontSize="2xl" color={"gray.300"}>
-        Experienced software engineering specialist and developer with more than
-        6+ years working as a software developer for Colombian and multinational
-        companies.{" "}
+        Experienced software engineer and web developer with more than 7 years
+        of experience working in big projects for Colombian and multinational
+        companies. He has expertise in technologies such as NodeJS, Typescript,
+        MongoDB, PHP and Java.{" "}
       </Text>
-      <Box height={"20px"}></Box>
+      <Box height={"50px"}></Box>
       <Heading size="2xl">
         <Link color="teal.500" onClick={() => router.push("work")}>
           Work
         </Link>
       </Heading>
-      <Box height={"10px"}></Box>
+      <Box height={"20px"}></Box>
       <Stack spacing={8} direction="row">
         <Feature
           title="Cafeto Software"
@@ -52,12 +55,15 @@ const Home: NextPage = () => {
         />
       </Stack>
       <Box height={"20px"}></Box>
+      <GetResumeBtn />
+      <Box height={"50px"}></Box>
       <Heading size="2xl">
         <Link color="teal.500" onClick={() => router.push("/contact")}>
           Get in Touch
         </Link>
       </Heading>
-      <Box height={"10px"}></Box>
+      <Box height={"20px"}></Box>
+      <Social includeLabels={true} />
       <ContactForm />
     </Container>
   );

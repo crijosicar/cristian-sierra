@@ -2,15 +2,15 @@ import { NextPage } from "next";
 import Head from "next/head";
 import {
   Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
   Container,
   Heading,
-  Tag,
-  TagLabel,
-  Tooltip,
 } from "@chakra-ui/react";
 import ContactForm from "./components/contactForm";
 import { useRouter } from "next/router";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 
 const Contact: NextPage = () => {
   const router = useRouter();
@@ -18,26 +18,22 @@ const Contact: NextPage = () => {
   return (
     <Container maxW="container.md">
       <Head>
-        <title>Contact - Cristian Sierra</title>
-        <meta
-          name="description"
-          content="Cristian Sierra - Software Engineer"
-        />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Work - Cristian Sierra</title>
       </Head>
-      <Tooltip hasArrow label="Go back" bg="red.600">
-        <Tag
-          as="a"
-          color="teal.400"
-          href="#"
-          size="lg"
-          onClick={() => router.push("/")}
-        >
-          <ArrowBackIcon />
-          <TagLabel>Back</TagLabel>
-        </Tag>
-      </Tooltip>
-      <Box height={"10px"}></Box>
+      <Breadcrumb
+        spacing="8px"
+        separator={<ChevronRightIcon color="gray.500" />}
+      >
+        <BreadcrumbItem>
+          <BreadcrumbLink href="#" onClick={() => router.push("/")}>
+            Home
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+          <BreadcrumbLink color="teal.500">Contact</BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
+      <Box height={"50px"}></Box>
       <Heading size="2xl">Get in touch</Heading>
       <Box height={"10px"}></Box>
       <ContactForm />
