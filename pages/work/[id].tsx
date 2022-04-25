@@ -24,11 +24,10 @@ const Work: NextPage = () => {
   const [pageId, setPageId] = useState("");
 
   useEffect(() => {
-    console.log(pageId);
     if (router.isReady) {
       const { id } = router.query;
       if (!id) return null;
-      setPageId(id as string);
+      setPageId(id.toString());
     }
   }, [pageId, router.isReady, router.query]);
 

@@ -1,6 +1,14 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Box, Container, Heading, Link, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Heading,
+  Link,
+  Stack,
+  Text,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import Feature from "./components/feature";
 import { useRouter } from "next/router";
 import Social from "./components/social";
@@ -9,6 +17,7 @@ import ContactForm from "./components/contactForm";
 
 const Home: NextPage = () => {
   const router = useRouter();
+  const direction = useBreakpointValue({ base: "column", md: "row" });
 
   return (
     <Container maxW="container.md">
@@ -40,7 +49,7 @@ const Home: NextPage = () => {
         </Link>
       </Heading>
       <Box height={"20px"}></Box>
-      <Stack spacing={8} direction="row">
+      <Stack direction={direction}>
         <Feature
           title="Cafeto Software"
           desc="The future can be even brighter but a goal without a plan is just a wish"

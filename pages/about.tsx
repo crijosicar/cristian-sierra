@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
+import GetResumeBtn from "./components/resume";
 
 const About: NextPage = () => {
   const router = useRouter();
@@ -63,6 +64,8 @@ const About: NextPage = () => {
         <Text fontSize="sm">United States</Text>
         <Box height={"20px"}></Box>
       </Box>
+      <Box height={"20px"}></Box>
+      <GetResumeBtn />
     </Container>
   );
 };
