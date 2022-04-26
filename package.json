@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start --port ${PORT-3000}",
     "export": "yarn build && next export -o _static",
-    "lint": "next lint"
+    "lint": "next lint "
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.1.7",
