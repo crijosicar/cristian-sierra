@@ -1,17 +1,17 @@
-import { Container, useBreakpointValue, Image } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 const NavBar = () => {
   const router = useRouter();
-  const location = useBreakpointValue({ base: "center", md: "right" });
 
   return (
-    <Container maxW="container.lg" as="nav">
+    <Container maxW="container.md" centerContent>
       <Image
-        alignSelf={location}
+        width={"200px"}
+        height={"200px"}
         onClick={() => router.push("/")}
-        boxSize="200px"
-        src="./1.svg"
+        src="/1.svg"
         alt="Cristian Sierra"
       />
     </Container>

@@ -36,7 +36,7 @@ const Index: NextPage = () => {
         <BreadcrumbItem>
           <BreadcrumbLink onClick={() => router.push("/")}>Home</BreadcrumbLink>
         </BreadcrumbItem>
-        <BreadcrumbItem>
+        <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink color="teal.500">Work</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
