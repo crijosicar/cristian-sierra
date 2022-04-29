@@ -33,4 +33,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+#ignore config file
 /pages/utils/db/serviceAccountKey.json
