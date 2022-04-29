@@ -13,7 +13,7 @@ const Post: NextPage = () => {
       if (!id) return null;
       setPostId(id.toString());
     }
-  }, [router.isReady]);
+  }, [router.isReady, router.query]);
 
   return <p>Post: {postId}</p>;
 };

@@ -9,11 +9,11 @@ import {
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import Feature from "./components/feature";
+import Feature from "../components/feature";
 import { useRouter } from "next/router";
-import Social from "./components/social";
-import GetResumeBtn from "./components/resume";
-import ContactForm from "./components/contactForm";
+import Social from "../components/social";
+import GetResumeBtn from "../components/resume";
+import ContactForm from "../components/contactForm";
 
 const Home: NextPage = () => {
   const router = useRouter();

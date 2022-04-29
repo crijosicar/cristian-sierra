@@ -1,4 +1,4 @@
-import db from "../../utils/db";
+import db from "../../../utils/db";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -11,7 +11,7 @@ export default async function handler(
       id: item.id,
       ...item.data(),
     }));
-    
+
     res.status(200).json({ aboutData });
   } catch (e) {
     res.status(400).end();

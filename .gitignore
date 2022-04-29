@@ -35,4 +35,4 @@ yarn-error.log*
 *.tsbuildinfo
 
 #ignore config file
-/pages/utils/db/serviceAccountKey.json
+/utils/db/serviceAccountKey.ts
