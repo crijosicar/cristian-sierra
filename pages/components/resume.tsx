@@ -14,7 +14,7 @@ const GetResumeBtn = () => {
           border="2px"
           variant={variant}
         >
-          Obtain Cristian's Resume
+          Obtain Cristian&apos;s Resume
         </Button>
       </Center>
     </Box>

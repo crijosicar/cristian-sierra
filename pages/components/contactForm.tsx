@@ -21,15 +21,15 @@ const ContactForm = () => {
     const errors = {};
 
     if (!contactFormFields.email) {
-      errors.email = "Required";
+      Object.assign(errors, { email: "Required" });
     } else if (
       !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(contactFormFields.email)
     ) {
-      errors.email = "Invalid email address";
+      Object.assign(errors, { email: "Invalid email address" });
     }
 
     if (!contactFormFields.message) {
-      errors.message = "Required";
+      Object.assign(errors, { message: "Required" });
     }
 
     return errors;
@@ -42,7 +42,6 @@ const ContactForm = () => {
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
-            "?subject=Contact Form&body=Lastame%20%3A%0D%0AFirstname%20%3A";
             alert(JSON.stringify(values, null, 2));
             setSubmitting(false);
           }, 1000);
@@ -51,7 +50,7 @@ const ContactForm = () => {
         {({ isSubmitting }) => (
           <Form>
             <Field name="name">
-              {({ field, form }) => (
+              {({ field, form }: Record<string, any>) => (
                 <FormControl
                   isRequired
                   isInvalid={form.errors.email && form.touched.email}
@@ -72,7 +71,7 @@ const ContactForm = () => {
             </Field>
             <Box h={3}></Box>
             <Field name="message">
-              {({ field, form }) => (
+              {({ field, form }: Record<string, any>) => (
                 <FormControl
                   isRequired
                   isInvalid={form.errors.message && form.touched.message}

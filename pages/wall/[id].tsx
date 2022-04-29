@@ -6,6 +6,7 @@ const Post: NextPage = () => {
   const router = useRouter();
   const [postId, setPostId] = useState("");
 
+  // @ts-ignore
   useEffect(() => {
     if (router.isReady) {
       const { id } = router.query;

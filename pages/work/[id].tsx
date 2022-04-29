@@ -23,6 +23,7 @@ const Work: NextPage = () => {
   const router = useRouter();
   const [pageId, setPageId] = useState("");
 
+  // @ts-ignore
   useEffect(() => {
     if (router.isReady) {
       const { id } = router.query;

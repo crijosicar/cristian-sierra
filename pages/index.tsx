@@ -17,7 +17,10 @@ import ContactForm from "./components/contactForm";
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const direction = useBreakpointValue({ base: "column", md: "row" });
+  const direction = useBreakpointValue({
+    base: "column" as any,
+    md: "row" as any,
+  });
 
   return (
     <Container maxW="container.md">
