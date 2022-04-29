@@ -4,7 +4,7 @@
   "private": true,
   "engines": {
     "node": "16.14.2",
-    "npm": "6.14.13"
+    "npm": "8.5.0"
   },
   "scripts": {
     "dev": "next dev",
@@ -18,6 +18,9 @@
     "@chakra-ui/react": "^1.8.8",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "axios": "^0.27.2",
+    "dashify": "^2.0.0",
+    "firebase-admin": "^10.1.0",
     "formik": "^2.2.9",
     "framer-motion": "^6",
     "next": "^12.1.5",

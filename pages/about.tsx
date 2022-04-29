@@ -30,13 +30,13 @@ const About: NextPage = () => {
             Home
           </BreadcrumbLink>
         </BreadcrumbItem>
-        <BreadcrumbItem>
+        <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink color="teal.500">Career</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
       <Box height={"50px"}></Box>
       <Heading size="2xl" color="teal.500">
-        Cristian's career
+        Cristian&amp;apos;s Software Engineer career development
       </Heading>
       <Box height={"20px"}></Box>
       <Text fontSize="2xl" color={"gray.300"}>
