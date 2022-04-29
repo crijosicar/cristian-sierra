@@ -29,7 +29,7 @@ const Contact: NextPage = () => {
             Home
           </BreadcrumbLink>
         </BreadcrumbItem>
-        <BreadcrumbItem>
+        <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink color="teal.500">Contact</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>

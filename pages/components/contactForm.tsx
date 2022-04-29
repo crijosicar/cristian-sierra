@@ -3,6 +3,7 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Input,
   Textarea,
@@ -41,6 +42,7 @@ const ContactForm = () => {
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
+            "?subject=Contact Form&body=Lastame%20%3A%0D%0AFirstname%20%3A";
             alert(JSON.stringify(values, null, 2));
             setSubmitting(false);
           }, 1000);
@@ -51,6 +53,7 @@ const ContactForm = () => {
             <Field name="name">
               {({ field, form }) => (
                 <FormControl
+                  isRequired
                   isInvalid={form.errors.email && form.touched.email}
                 >
                   <FormLabel htmlFor="email">Email</FormLabel>
@@ -60,13 +63,18 @@ const ContactForm = () => {
                     type={"email"}
                     placeholder="email"
                   />
+                  <FormHelperText>
+                    We&amp;apos;ll never share your email.
+                  </FormHelperText>
                   <FormErrorMessage>{form.errors.email}</FormErrorMessage>
                 </FormControl>
               )}
             </Field>
+            <Box h={3}></Box>
             <Field name="message">
               {({ field, form }) => (
                 <FormControl
+                  isRequired
                   isInvalid={form.errors.message && form.touched.message}
                 >
                   <FormLabel htmlFor="email">Message</FormLabel>
