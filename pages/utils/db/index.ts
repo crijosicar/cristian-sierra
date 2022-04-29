@@ -1,10 +1,11 @@
 import admin from "firebase-admin";
-import serviceAccount from "./serviceAccountKey.json";
 
 if (!admin.apps.length) {
   try {
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount as any),
+      credential: admin.credential.cert(
+        process.env.GOOGLE_APPLICATION_CREDENTIALS!
+      ),
     });
   } catch (error) {
     console.log("Firebase admin initialization error", error);
