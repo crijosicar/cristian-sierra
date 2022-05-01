@@ -24,24 +24,11 @@ import { GetServerSidePropsResult } from "next/types";
 import db from "../../utils/db";
 import moment from "moment";
 import { Timestamp } from "@google-cloud/firestore";
+import { Work } from "./[slug]"; 
 
 type WorkPageProps = {
   workData: Work[];
 };
-
-export interface Work {
-  id: string;
-  clients: any[];
-  summary: string;
-  contractType: string;
-  companyIcon: string;
-  startDate: Date;
-  endDate: Date;
-  position: string;
-  commitments: string[];
-  companyName: string;
-  location: string;
-}
 
 const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
   const router = useRouter();
@@ -94,7 +81,7 @@ const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
               <Link
                 fontSize="xl"
                 as="a"
-                href={`/work/${encodeURIComponent(work.companyName)}`}
+                href={`/work/${encodeURIComponent(work.slug)}`}
               >
                 {work.position}
               </Link>
