@@ -1,7 +1,7 @@
 import { Box, Heading, Link, Text } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import { Work } from "../pages/work";
+import { Work } from "../pages/work/[slug]";
 
 const WorkHome = ({ work }: { work: Work }) => {
   const router = useRouter();

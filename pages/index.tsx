@@ -17,7 +17,7 @@ import ContactForm from "../components/contactForm";
 import { GetServerSidePropsResult } from "next/types";
 import db from "../utils/db";
 import { AboutData } from "./about";
-import { Work } from "./work";
+import { Work } from "./work/[slug]";
 
 type HomePageProps = {
   aboutData: AboutData;

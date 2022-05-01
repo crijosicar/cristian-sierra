@@ -42,7 +42,7 @@ export interface Work {
   location: string;
 }
 
-const WorkPage: NextPage = ({ work }: WorkPageProps) => {
+const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
   const router = useRouter();
   
   const formatDate = (date: Date): string => {
@@ -109,13 +109,9 @@ const WorkPage: NextPage = ({ work }: WorkPageProps) => {
           <Heading fontSize="xl">{"Technologies"}</Heading>
           <Box height={"20px"}></Box>
           <HStack spacing={4}>
-          {(work.technologies || []).map(
-            (technology: string, index: number) => (
-              <Tag key={index} size={"md"} variant="solid" colorScheme="teal">
-               {technology}
-              </Tag>
-             )
-           )}
+          <Tag size={"md"} variant="solid" colorScheme="teal">
+               Typescript
+           </Tag>
           </HStack>
         </Box>
       </Box>
