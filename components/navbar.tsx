@@ -8,6 +8,7 @@ const NavBar = () => {
   return (
     <Container maxW="container.md" centerContent>
       <Image
+        style={{ cursor: "pointer" }}
         width={"200px"}
         height={"200px"}
         onClick={() => router.push("/")}

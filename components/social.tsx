@@ -1,18 +1,7 @@
 import { Box, ButtonGroup, IconButton, Stack } from "@chakra-ui/react";
 import { FaGithub, FaLinkedin, FaMailBulk, FaTwitter } from "react-icons/fa";
-import { GetServerSideProps, NextPage } from "next";
-import db from "../../utils/db";
-import { AboutData } from "../about";
 
-type SocialComponentProps = {
-  socialData: AboutData;
-};
-
-const Social: NextPage<SocialComponentProps> = ({
-  socialData,
-}: SocialComponentProps) => {
-  console.log(`Social => socialData => ${JSON.stringify(socialData)}`);
-
+const Social = () => {
   return (
     <Stack justify="center" direction="row" align="center">
       <ButtonGroup variant="ghost">
@@ -47,19 +36,6 @@ const Social: NextPage<SocialComponentProps> = ({
       </ButtonGroup>
     </Stack>
   );
-};
-
-const getServerSideProps: GetServerSideProps = async () => {
-  const aboutPageProps = await db.collection("about").get();
-  const [socialData] = aboutPageProps.docs.map((doc) => doc.data());
-
-  console.log(`getServerSideProps => socialData => ${socialData}`);
-
-  return {
-    props: {
-      socialData: JSON.parse(JSON.stringify(socialData)),
-    },
-  };
 };
 
 export default Social;

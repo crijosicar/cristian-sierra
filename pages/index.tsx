@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import {
   Box,
@@ -9,12 +10,24 @@ import {
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import Feature from "./components/feature";
+import WorkHome from "../components/workHome";
 import { useRouter } from "next/router";
-import GetResumeBtn from "./components/resume";
-import ContactForm from "./components/contactForm";
+import GetResumeBtn from "../components/resume";
+import ContactForm from "../components/contactForm";
+import { GetServerSidePropsResult } from "next/types";
+import db from "../utils/db";
+import { AboutData } from "./about";
+import { Work } from "./work";
 
-const Home: NextPage = () => {
+type HomePageProps = {
+  aboutData: AboutData;
+  workData: Work[];
+};
+
+const Home: NextPage<HomePageProps> = ({
+  aboutData,
+  workData,
+}: HomePageProps) => {
   const router = useRouter();
   const direction = useBreakpointValue({
     base: "column" as any,
@@ -39,10 +52,7 @@ const Home: NextPage = () => {
       </Heading>
       <Box height={"20px"}></Box>
       <Text fontSize="2xl" color={"gray.300"}>
-        Experienced software engineer and web developer with more than 7 years
-        of experience working in big projects for Colombian and multinational
-        companies. He has expertise in technologies such as NodeJS, Typescript,
-        MongoDB, PHP and Java.{" "}
+        {aboutData.summary}{" "}
       </Text>
       <Box height={"50px"}></Box>
       <Heading size="2xl">
@@ -52,21 +62,12 @@ const Home: NextPage = () => {
       </Heading>
       <Box height={"20px"}></Box>
       <Stack direction={direction}>
-        <Feature
-          title="Cafeto Software"
-          desc="You deserve good things. With a whooping 10-15% interest rate per annum, grow your savings on your own terms with our completely automated process"
-        />
-        <Feature
-          title="Globant"
-          desc="You deserve good things. With a whooping 10-15% interest rate per annum, grow your savings on your own terms with our completely automated process"
-        />
-        <Feature
-          title="DXC Technology"
-          desc="You deserve good things. With a whooping 10-15% interest rate per annum, grow your savings on your own terms with our completely automated process"
-        />
+        {(workData || []).map((work: Work, index: number) => (
+          <WorkHome key={index} work={work} />
+        ))}
       </Stack>
       <Box height={"20px"}></Box>
-      <GetResumeBtn resumeUrl={""} />
+      <GetResumeBtn resumeUrl={aboutData.resumeUrl} />
       <Box height={"50px"}></Box>
       <Heading size="2xl">
         <Link color="teal.500" onClick={() => router.push("/contact")}>
@@ -77,6 +78,27 @@ const Home: NextPage = () => {
       <ContactForm />
     </Container>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (): Promise<
+  GetServerSidePropsResult<HomePageProps>
+> => {
+  const aboutPageProps = await db.collection("about").get();
+  const [aboutData] = aboutPageProps.docs.map((doc) => doc.data());
+
+  const workPageProps = await db
+    .collection("work")
+    .orderBy("startDate")
+    .limit(3)
+    .get();
+  const workData = workPageProps.docs.map((doc) => doc.data());
+
+  return {
+    props: {
+      aboutData: JSON.parse(JSON.stringify(aboutData)),
+      workData: JSON.parse(JSON.stringify(workData)),
+    },
+  };
 };
 
 export default Home;

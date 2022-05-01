@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import GetResumeBtn from "./components/resume";
+import GetResumeBtn from "../components/resume";
 import { GetServerSidePropsResult } from "next/types";
 import db from "../utils/db";
 
