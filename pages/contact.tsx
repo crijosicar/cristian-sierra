@@ -8,17 +8,11 @@ import {
   Container,
   Heading,
 } from "@chakra-ui/react";
-import ContactForm from "./components/contactForm";
+import ContactForm from "../components/contactForm";
 import { useRouter } from "next/router";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 
-type ContactPageProps = {
-  contactData: Record<string, any>;
-};
-
-const Contact: NextPage<ContactPageProps> = ({
-  contactData,
-}: ContactPageProps) => {
+const Contact: NextPage = () => {
   const router = useRouter();
 
   return (
