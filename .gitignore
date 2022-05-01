@@ -10,7 +10,6 @@
 
 # next.js
 /.next/
-/out/
 
 # production
 /build
@@ -33,6 +32,3 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-
-#ignore config file
-/utils/db/serviceAccountKey.json

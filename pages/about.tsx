@@ -36,7 +36,7 @@ const About: NextPage = () => {
       </Breadcrumb>
       <Box height={"50px"}></Box>
       <Heading size="2xl" color="teal.500">
-        Cristian&amp;apos;s Software Engineer career development
+        Cristian&apos;s Software Engineer career development
       </Heading>
       <Box height={"20px"}></Box>
       <Text fontSize="2xl" color={"gray.300"}>
