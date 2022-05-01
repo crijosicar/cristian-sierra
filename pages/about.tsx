@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import {
   Box,
@@ -11,9 +11,56 @@ import {
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import GetResumeBtn from "../components/resume";
+import GetResumeBtn from "./components/resume";
+import { GetServerSidePropsResult } from "next/types";
+import db from "../utils/db";
 
-const About: NextPage = () => {
+type AboutPageProps = {
+  aboutData: AboutData;
+};
+
+export interface Social {
+  github: string;
+  linkedin: string;
+  email: string;
+  twitter: string;
+}
+
+export interface FbDateFormat {
+  _seconds: number;
+  _nanoseconds: number;
+}
+
+export interface Education {
+  country: string;
+  institution: string;
+  credential: string;
+  endDate: FbDateFormat;
+  startDate: FbDateFormat;
+  title: string;
+  delivery: string;
+}
+
+export interface Certification {
+  issuedAt: FbDateFormat;
+  issuingOrganization: string;
+  title: string;
+}
+
+export interface AboutData {
+  id: string;
+  social: Social;
+  education: Education[];
+  summary: string;
+  certifications: Certification[];
+  currentLocation: string;
+  citizenship: string;
+  resumeUrl: string;
+  fullName: string;
+  dateOfBirth: FbDateFormat;
+}
+
+const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
   const router = useRouter();
 
   return (
@@ -40,34 +87,69 @@ const About: NextPage = () => {
       </Heading>
       <Box height={"20px"}></Box>
       <Text fontSize="2xl" color={"gray.300"}>
-        Experienced software engineer and web developer with more than 7 years
-        of experience working in big projects for Colombian and multinational
-        companies. He has expertise in technologies such as NodeJS, Typescript,
-        MongoDB, PHP and Java.{" "}
+        {aboutData.summary}{" "}
       </Text>
       <Box height={"20px"}></Box>
       <Heading fontSize="xl">{"Education"}</Heading>
       <Box height={"20px"}></Box>
-      <Box ml="5">
-        <Heading fontSize="xl">{"Senior Software Engineer"}</Heading>
-        <Text mt={1}>{"Cafeto Software · Full-time"}</Text>
-        <Text fontSize="sm">Sep 2021 - Present · 8 mos</Text>
-        <Text fontSize="sm">United States</Text>
-        <Box height={"20px"}></Box>
-      </Box>
-      <Heading fontSize="xl">{"Courses"}</Heading>
+      {(aboutData.education || []).map(
+        (education: Education, index: number) => (
+          <Box ml="5" key={index}>
+            <Heading fontSize="xl">{education.institution}</Heading>
+            <Text mt={1}>
+              {education.title} · {education.delivery}
+            </Text>
+            <Text fontSize="sm">
+              {new Intl.DateTimeFormat("en-US", {
+                year: "numeric",
+                month: "short",
+              }).format(education.startDate._seconds)}{" "}
+              -{" "}
+              {new Intl.DateTimeFormat("en-US", {
+                year: "numeric",
+                month: "short",
+              }).format(education.endDate._seconds)}
+            </Text>
+            <Text mt={1}>{education.country}</Text>
+          </Box>
+        )
+      )}
       <Box height={"20px"}></Box>
-      <Box ml="5">
-        <Heading fontSize="xl">{"Senior Software Engineer"}</Heading>
-        <Text mt={1}>{"Cafeto Software · Full-time"}</Text>
-        <Text fontSize="sm">Sep 2021 - Present · 8 mos</Text>
-        <Text fontSize="sm">United States</Text>
-        <Box height={"20px"}></Box>
-      </Box>
+      <Heading fontSize="xl">{"Courses and Certifications"}</Heading>
       <Box height={"20px"}></Box>
-      <GetResumeBtn />
+      {(aboutData.certifications || []).map(
+        (certification: Certification, index: number) => (
+          <Box ml="5" key={index}>
+            <Heading fontSize="xl">{certification.title}</Heading>
+            <Text mt={1}>{certification.title}</Text>
+            <Text fontSize="sm">
+              {" "}
+              Issued at{" "}
+              {new Intl.DateTimeFormat("en-US", {
+                year: "numeric",
+                month: "short",
+              }).format(certification.issuedAt._seconds)}
+            </Text>
+          </Box>
+        )
+      )}
+      <Box height={"20px"}></Box>
+      <GetResumeBtn resumeUrl={aboutData.resumeUrl} />
     </Container>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (): Promise<
+  GetServerSidePropsResult<AboutPageProps>
+> => {
+  const aboutPageProps = await db.collection("about").get();
+  const [aboutData] = aboutPageProps.docs.map((doc) => doc.data());
+
+  return {
+    props: {
+      aboutData: JSON.parse(JSON.stringify(aboutData)),
+    },
+  };
 };
 
 export default About;

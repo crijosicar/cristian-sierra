@@ -9,11 +9,10 @@ import {
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import Feature from "../components/feature";
+import Feature from "./components/feature";
 import { useRouter } from "next/router";
-import Social from "../components/social";
-import GetResumeBtn from "../components/resume";
-import ContactForm from "../components/contactForm";
+import GetResumeBtn from "./components/resume";
+import ContactForm from "./components/contactForm";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -67,7 +66,7 @@ const Home: NextPage = () => {
         />
       </Stack>
       <Box height={"20px"}></Box>
-      <GetResumeBtn />
+      <GetResumeBtn resumeUrl={""} />
       <Box height={"50px"}></Box>
       <Heading size="2xl">
         <Link color="teal.500" onClick={() => router.push("/contact")}>
@@ -75,7 +74,6 @@ const Home: NextPage = () => {
         </Link>
       </Heading>
       <Box height={"20px"}></Box>
-      <Social includeLabels={true} />
       <ContactForm />
     </Container>
   );
