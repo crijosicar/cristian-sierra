@@ -22,9 +22,8 @@ import { useRouter } from "next/router";
 import { MdCheckCircle } from "react-icons/md";
 import { GetServerSidePropsResult } from "next/types";
 import db from "../../utils/db";
-import moment from "moment";
 import { Timestamp } from "@google-cloud/firestore";
-import { Work } from "./[slug]"; 
+import { calculateElapsedTime, formatDate, Work } from "./[id]";
 
 type WorkPageProps = {
   workData: Work[];
@@ -32,17 +31,6 @@ type WorkPageProps = {
 
 const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
   const router = useRouter();
-
-  const formatDate = (date: Date): string => {
-    return moment(date).format("MMM yyyy");
-  };
-
-  const calculateElapsedTime = (work: Work): string => {
-    const startDate = moment(work.startDate);
-    const endDate = moment(work.endDate ? work.endDate : new Date());
-
-    return moment.duration(endDate.diff(startDate)).asMonths().toFixed(0);
-  };
 
   return (
     <Container maxW="container.md">
