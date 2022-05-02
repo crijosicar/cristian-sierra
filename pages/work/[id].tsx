@@ -23,19 +23,37 @@ import {
   GetStaticProps,
 } from "next/types";
 import db from "../../utils/db";
-import moment from "moment";
-import { Timestamp } from "@google-cloud/firestore";
 import { firestore } from "firebase-admin";
+import {
+  calculateElapsedTime,
+  formatDate,
+  formatFieldsDate,
+} from "../../utils/date";
 import DocumentData = firestore.DocumentData;
 
 type WorkPageProps = {
   work: Work;
 };
 
+export interface Project {
+  startDate: Date;
+  technologies: string[];
+  endDate: Date;
+  commitments: string[];
+  projectName: string;
+}
+
+export interface Client {
+  startDate: Date;
+  clientName: string;
+  endDate: Date;
+  projects: Project[];
+}
+
 export interface Work {
   id: string;
   slug: string;
-  clients: any[];
+  clients: Client[];
   summary: string;
   contractType: string;
   companyIcon: string;
@@ -46,17 +64,6 @@ export interface Work {
   companyName: string;
   location: string;
 }
-
-export const formatDate = (date: Date): string => {
-  return moment(date).format("MMM yyyy");
-};
-
-export const calculateElapsedTime = (work: Work): string => {
-  const startDate = moment(work.startDate);
-  const endDate = moment(work.endDate ? work.endDate : new Date());
-
-  return moment.duration(endDate.diff(startDate)).asMonths().toFixed(0);
-};
 
 const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
   const router = useRouter();
@@ -87,38 +94,50 @@ const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
         {work.companyName}
       </Heading>
       <Box height={"20px"}></Box>
-      <Box>
-        <Box ml="5">
-          <Heading fontSize="xl">{work.position}</Heading>
-          <Text mt={1}>{`${work.companyName} · Full-time`}</Text>
-          <Text fontSize="sm">
-            {formatDate(work.startDate)} -{" "}
-            {work.endDate ? formatDate(work.endDate) : " Present"} ·{" "}
-            {`${calculateElapsedTime(work)} Months`}
-          </Text>
-          <Text fontSize="sm">United States</Text>
-          <Box height={"20px"}></Box>
-          <Heading fontSize="xl">{"Commitments"}</Heading>
-          <Box height={"20px"}></Box>
-          <List spacing={3}>
-            {(work.commitments || []).map(
-              (commitment: string, index: number) => (
-                <ListItem key={index}>
-                  <ListIcon as={MdCheckCircle} color="green.500" />
-                  {commitment}
-                </ListItem>
-              )
-            )}
-          </List>
-          <Box height={"20px"}></Box>
-          <Heading fontSize="xl">{"Technologies"}</Heading>
-          <Box height={"20px"}></Box>
-          <HStack spacing={4}>
-            <Tag size={"md"} variant="solid" colorScheme="teal">
-              Typescript
-            </Tag>
-          </HStack>
-        </Box>
+      <Box ml="5">
+        <Heading fontSize="xl">{work.position}</Heading>
+        <Text mt={1}>{`${work.companyName} · Full-time`}</Text>
+        <Text fontSize="sm">
+          {formatDate(work.startDate)} -{" "}
+          {work.endDate ? formatDate(work.endDate) : " Present"} ·{" "}
+          {`${calculateElapsedTime(work)} Months`}
+        </Text>
+        <Text fontSize="sm">United States</Text>
+        <Box height={"20px"}></Box>
+        <Heading fontSize="xl">{"Commitments"}</Heading>
+        <Box height={"20px"}></Box>
+        <List spacing={3}>
+          {(work.commitments || []).map((commitment: string, index: number) => (
+            <ListItem key={index}>
+              <ListIcon as={MdCheckCircle} color="green.500" />
+              {commitment}
+            </ListItem>
+          ))}
+        </List>
+        <Box height={"20px"}></Box>
+        <Heading fontSize="xl">{"Projects"}</Heading>
+        <HStack spacing={4}>
+          {(work.clients || []).map((client: Client, index: number) => (
+            <Box key={index}>
+              {(client.projects || []).map(
+                (project: Project, pindex: number) => (
+                  <Box key={pindex}>
+                    <Text mt={1} as="em">
+                      {client.clientName} {project.projectName}
+                    </Text>
+                    <Text fontSize="sm">United States</Text>
+                    <Tag
+                      key={pindex}
+                      size={"md"}
+                      variant="solid"
+                      colorScheme="teal"
+                    ></Tag>
+                  </Box>
+                )
+              )}
+            </Box>
+          ))}
+        </HStack>
       </Box>
     </Container>
   );
@@ -143,12 +162,9 @@ export const getStaticProps: GetStaticProps = async ({
     .collection("work")
     .where("slug", "==", params!.id)
     .get();
+
   const [workData] = workPageProps.docs.map((doc) => {
-    const data = doc.data();
-    Object.keys(doc.data())
-      .filter((key) => data[key] instanceof Timestamp)
-      .forEach((key) => (data[key] = data[key].toDate()));
-    return data;
+    return formatFieldsDate(doc.data());
   });
 
   return { props: { work: JSON.parse(JSON.stringify(workData)) } };

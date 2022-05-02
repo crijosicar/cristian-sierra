@@ -22,8 +22,9 @@ import { useRouter } from "next/router";
 import { MdCheckCircle } from "react-icons/md";
 import { GetServerSidePropsResult } from "next/types";
 import db from "../../utils/db";
-import { Timestamp } from "@google-cloud/firestore";
-import { calculateElapsedTime, formatDate, Work } from "./[id]";
+import { Work } from "./[id]";
+import { calculateElapsedTime, formatDate } from "../../utils/date";
+import { DocumentData, Timestamp } from "@google-cloud/firestore";
 
 type WorkPageProps = {
   workData: Work[];
@@ -102,13 +103,20 @@ const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
 export const getServerSideProps: GetServerSideProps = async (): Promise<
   GetServerSidePropsResult<WorkPageProps>
 > => {
+  const formatFieldsDate1 = (documentData: DocumentData) => {
+    const data = documentData;
+    Object.keys(documentData).forEach((key) => {
+      if (data[key] instanceof Timestamp) {
+        data[key] = data[key].toDate();
+      } else if (typeof data[key] === "object") {
+        formatFieldsDate1(data[key]);
+      }
+    });
+    return data;
+  };
   const workPageProps = await db.collection("work").orderBy("startDate").get();
   const workData = workPageProps.docs.map((doc) => {
-    const data = doc.data();
-    Object.keys(doc.data())
-      .filter((key) => data[key] instanceof Timestamp)
-      .forEach((key) => (data[key] = data[key].toDate()));
-    return data;
+    return formatFieldsDate1(doc.data());
   });
 
   return {
