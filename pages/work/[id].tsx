@@ -90,19 +90,18 @@ const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
       <Heading size="2xl" color="teal.500">
         {work.companyName}
       </Heading>
-      <Box height={"20px"}></Box>
-      <Box ml="5">
+      <Box height={"10px"}></Box>
+      <Box ml="3">
         <Heading fontSize="xl">{work.position}</Heading>
-        <Text mt={1}>{`${work.companyName} · Full-time`}</Text>
         <Text fontSize="sm">
           {formatDate(work.startDate)} -{" "}
           {work.endDate ? formatDate(work.endDate) : " Present"} ·{" "}
           {`${calculateElapsedTime(work)} Months`}
         </Text>
-        <Text fontSize="sm">United States</Text>
+        <Text fontSize="sm">{work.location}</Text>
         <Box height={"20px"}></Box>
         <Heading fontSize="xl">{"Commitments"}</Heading>
-        <Box height={"20px"}></Box>
+        <Box height={"10px"}></Box>
         <List spacing={3}>
           {(work.commitments || []).map((commitment: string, index: number) => (
             <ListItem key={index}>
@@ -114,21 +113,50 @@ const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
         <Box height={"20px"}></Box>
         <Heading fontSize="xl">{"Projects"}</Heading>
         <HStack spacing={4}>
-          {(work.clients || []).map((client: Client, index: number) => (
-            <Box key={index}>
+          {(work.clients || []).map((client: Client, clientIndex: number) => (
+            <Box key={clientIndex}>
               {(client.projects || []).map(
-                (project: Project, pindex: number) => (
-                  <Box key={pindex}>
-                    <Text mt={1} as="em">
-                      {client.clientName} {project.projectName}
+                (project: Project, projectIndex: number) => (
+                  <Box key={projectIndex}>
+                    <Text
+                      mt={1}
+                    >{`${project.projectName} · ${client.clientName}`}</Text>
+                    <Text fontSize="sm">
+                      {formatDate(project.startDate)} -{" "}
+                      {project.endDate
+                        ? formatDate(project.endDate)
+                        : " Present"}
                     </Text>
-                    <Text fontSize="sm">United States</Text>
-                    <Tag
-                      key={pindex}
-                      size={"md"}
-                      variant="solid"
-                      colorScheme="teal"
-                    ></Tag>
+                    <Box height={"10px"}></Box>
+                    <Box>
+                      <Text>Commitments: </Text>
+                      <List spacing={3}>
+                        {(project.commitments || []).map(
+                          (commitment: string, commitmentIndex: number) => (
+                            <ListItem key={commitmentIndex}>
+                              <ListIcon as={MdCheckCircle} color="green.500" />
+                              {commitment}
+                            </ListItem>
+                          )
+                        )}
+                      </List>
+                    </Box>
+                    <Box height={"10px"}></Box>
+                    <Box>
+                      <Text>Technologies: </Text>
+                      {(project.technologies || []).map(
+                        (technology: string, technologyIndex: number) => (
+                          <Tag
+                            key={technologyIndex}
+                            size={"md"}
+                            variant="solid"
+                            colorScheme="teal"
+                          >
+                            {technology}
+                          </Tag>
+                        )
+                      )}
+                    </Box>
                   </Box>
                 )
               )}
@@ -166,6 +194,7 @@ export const getStaticProps: GetStaticProps = async ({
     });
     return data;
   };
+
   const workPageProps = await db
     .collection("work")
     .where("slug", "==", params!.id)

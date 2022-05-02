@@ -114,7 +114,9 @@ export const getServerSideProps: GetServerSideProps = async (): Promise<
     });
     return data;
   };
+
   const workPageProps = await db.collection("work").orderBy("startDate").get();
+
   const workData = workPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());
   });
