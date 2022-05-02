@@ -24,11 +24,8 @@ import {
 } from "next/types";
 import db from "../../utils/db";
 import { firestore } from "firebase-admin";
-import {
-  calculateElapsedTime,
-  formatDate,
-  formatFieldsDate,
-} from "../../utils/date";
+import { calculateElapsedTime, formatDate } from "../../utils/date";
+import { Timestamp } from "@google-cloud/firestore";
 import DocumentData = firestore.DocumentData;
 
 type WorkPageProps = {
@@ -158,6 +155,17 @@ export const getStaticPaths: GetStaticPaths =
 export const getStaticProps: GetStaticProps = async ({
   params,
 }): Promise<GetStaticPropsResult<{ work: Work }>> => {
+  const formatFieldsDate = (documentData: DocumentData) => {
+    const data = documentData;
+    Object.keys(documentData).forEach((key) => {
+      if (data[key] instanceof Timestamp) {
+        data[key] = data[key].toDate();
+      } else if (typeof data[key] === "object") {
+        formatFieldsDate(documentData[key]);
+      }
+    });
+    return data;
+  };
   const workPageProps = await db
     .collection("work")
     .where("slug", "==", params!.id)

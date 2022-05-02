@@ -103,20 +103,20 @@ const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
 export const getServerSideProps: GetServerSideProps = async (): Promise<
   GetServerSidePropsResult<WorkPageProps>
 > => {
-  const formatFieldsDate1 = (documentData: DocumentData) => {
+  const formatFieldsDate = (documentData: DocumentData) => {
     const data = documentData;
     Object.keys(documentData).forEach((key) => {
       if (data[key] instanceof Timestamp) {
         data[key] = data[key].toDate();
       } else if (typeof data[key] === "object") {
-        formatFieldsDate1(data[key]);
+        formatFieldsDate(documentData[key]);
       }
     });
     return data;
   };
   const workPageProps = await db.collection("work").orderBy("startDate").get();
   const workData = workPageProps.docs.map((doc) => {
-    return formatFieldsDate1(doc.data());
+    return formatFieldsDate(doc.data());
   });
 
   return {
