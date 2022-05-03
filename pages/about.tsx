@@ -15,6 +15,7 @@ import GetResumeBtn from "../components/resume";
 import db from "../utils/db";
 import { formatDate, formatFieldsDate } from "../utils/date";
 import { GetServerSidePropsResult } from "next/types";
+import { DocumentData, Timestamp } from "@google-cloud/firestore";
 
 type AboutPageProps = {
   aboutData: AboutData;
@@ -127,6 +128,18 @@ const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
 export const getServerSideProps: GetServerSideProps = async (): Promise<
   GetServerSidePropsResult<AboutPageProps>
 > => {
+  const formatFieldsDate = (documentData: DocumentData) => {
+    const data = documentData;
+    Object.keys(documentData).forEach((key) => {
+      if (data[key] instanceof Timestamp) {
+        data[key] = data[key].toDate();
+      } else if (typeof data[key] === "object") {
+        formatFieldsDate(documentData[key]);
+      }
+    });
+    return data;
+  };
+
   const aboutPageProps = await db.collection("about").get();
   const [aboutData] = aboutPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());
