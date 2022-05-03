@@ -1,5 +1,4 @@
-import type { NextPage } from "next";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import {
   Box,
@@ -17,7 +16,7 @@ import ContactForm from "../components/contactForm";
 import { GetServerSidePropsResult } from "next/types";
 import db from "../utils/db";
 import { AboutData } from "./about";
-import { Work } from "./work";
+import { Work } from "./work/[id]";
 
 type HomePageProps = {
   aboutData: AboutData;
@@ -91,6 +90,7 @@ export const getServerSideProps: GetServerSideProps = async (): Promise<
     .orderBy("startDate")
     .limit(3)
     .get();
+
   const workData = workPageProps.docs.map((doc) => doc.data());
 
   return {

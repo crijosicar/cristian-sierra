@@ -12,8 +12,9 @@ import {
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import GetResumeBtn from "../components/resume";
-import { GetServerSidePropsResult } from "next/types";
 import db from "../utils/db";
+import { formatDate, formatFieldsDate } from "../utils/date";
+import { GetServerSidePropsResult } from "next/types";
 
 type AboutPageProps = {
   aboutData: AboutData;
@@ -26,23 +27,18 @@ export interface Social {
   twitter: string;
 }
 
-export interface FbDateFormat {
-  _seconds: number;
-  _nanoseconds: number;
-}
-
 export interface Education {
   country: string;
   institution: string;
   credential: string;
-  endDate: FbDateFormat;
-  startDate: FbDateFormat;
+  endDate: Date;
+  startDate: Date;
   title: string;
   delivery: string;
 }
 
 export interface Certification {
-  issuedAt: FbDateFormat;
+  issuedAt: Date;
   issuingOrganization: string;
   title: string;
 }
@@ -57,7 +53,7 @@ export interface AboutData {
   citizenship: string;
   resumeUrl: string;
   fullName: string;
-  dateOfBirth: FbDateFormat;
+  dateOfBirth: Date;
 }
 
 const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
@@ -100,15 +96,8 @@ const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
               {education.title} · {education.delivery}
             </Text>
             <Text fontSize="sm">
-              {new Intl.DateTimeFormat("en-US", {
-                year: "numeric",
-                month: "short",
-              }).format(education.startDate._seconds)}{" "}
-              -{" "}
-              {new Intl.DateTimeFormat("en-US", {
-                year: "numeric",
-                month: "short",
-              }).format(education.endDate._seconds)}
+              {formatDate(education.startDate)} -{" "}
+              {formatDate(education.endDate)}
             </Text>
             <Text mt={1}>{education.country}</Text>
           </Box>
@@ -124,11 +113,7 @@ const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
             <Text mt={1}>{certification.title}</Text>
             <Text fontSize="sm">
               {" "}
-              Issued at{" "}
-              {new Intl.DateTimeFormat("en-US", {
-                year: "numeric",
-                month: "short",
-              }).format(certification.issuedAt._seconds)}
+              Issued at {formatDate(certification.issuedAt)}{" "}
             </Text>
           </Box>
         )
@@ -143,7 +128,9 @@ export const getServerSideProps: GetServerSideProps = async (): Promise<
   GetServerSidePropsResult<AboutPageProps>
 > => {
   const aboutPageProps = await db.collection("about").get();
-  const [aboutData] = aboutPageProps.docs.map((doc) => doc.data());
+  const [aboutData] = aboutPageProps.docs.map((doc) => {
+    return formatFieldsDate(doc.data());
+  });
 
   return {
     props: {

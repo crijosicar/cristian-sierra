@@ -22,9 +22,9 @@ import { useRouter } from "next/router";
 import { MdCheckCircle } from "react-icons/md";
 import { GetServerSidePropsResult } from "next/types";
 import db from "../../utils/db";
-import moment from "moment";
-import { Timestamp } from "@google-cloud/firestore";
-import { Work } from "./[slug]"; 
+import { Work } from "./[id]";
+import { calculateElapsedTime, formatDate } from "../../utils/date";
+import { DocumentData, Timestamp } from "@google-cloud/firestore";
 
 type WorkPageProps = {
   workData: Work[];
@@ -32,17 +32,6 @@ type WorkPageProps = {
 
 const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
   const router = useRouter();
-
-  const formatDate = (date: Date): string => {
-    return moment(date).format("MMM yyyy");
-  };
-
-  const calculateElapsedTime = (work: Work): string => {
-    const startDate = moment(work.startDate);
-    const endDate = moment(work.endDate ? work.endDate : new Date());
-
-    return moment.duration(endDate.diff(startDate)).asMonths().toFixed(0);
-  };
 
   return (
     <Container maxW="container.md">
@@ -114,13 +103,22 @@ const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
 export const getServerSideProps: GetServerSideProps = async (): Promise<
   GetServerSidePropsResult<WorkPageProps>
 > => {
-  const workPageProps = await db.collection("work").orderBy("startDate").get();
-  const workData = workPageProps.docs.map((doc) => {
-    const data = doc.data();
-    Object.keys(doc.data())
-      .filter((key) => data[key] instanceof Timestamp)
-      .forEach((key) => (data[key] = data[key].toDate()));
+  const formatFieldsDate = (documentData: DocumentData) => {
+    const data = documentData;
+    Object.keys(documentData).forEach((key) => {
+      if (data[key] instanceof Timestamp) {
+        data[key] = data[key].toDate();
+      } else if (typeof data[key] === "object") {
+        formatFieldsDate(documentData[key]);
+      }
+    });
     return data;
+  };
+
+  const workPageProps = await db.collection("work").orderBy("startDate").get();
+
+  const workData = workPageProps.docs.map((doc) => {
+    return formatFieldsDate(doc.data());
   });
 
   return {
