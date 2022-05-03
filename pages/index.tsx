@@ -79,9 +79,13 @@ const Home: NextPage<HomePageProps> = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (): Promise<
+export const getServerSideProps: GetServerSideProps = async ({ req, res }): Promise<
   GetServerSidePropsResult<HomePageProps>
 > => {
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59'
+  )
   const aboutPageProps = await db.collection("about").get();
 
   const [aboutData] = aboutPageProps.docs.map((doc) => doc.data());

@@ -100,9 +100,13 @@ const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (): Promise<
+export const getServerSideProps: GetServerSideProps = async ({ req, res }): Promise<
   GetServerSidePropsResult<WorkPageProps>
 > => {
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59'
+  )
   const formatFieldsDate = (documentData: DocumentData) => {
     const data = documentData;
     Object.keys(documentData).forEach((key) => {

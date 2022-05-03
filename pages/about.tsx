@@ -125,9 +125,13 @@ const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (): Promise<
+export const getServerSideProps: GetServerSideProps = async ({ req, res }): Promise<
   GetServerSidePropsResult<AboutPageProps>
 > => {
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59'
+  )
   const formatFieldsDate = (documentData: DocumentData) => {
     const data = documentData;
     Object.keys(documentData).forEach((key) => {

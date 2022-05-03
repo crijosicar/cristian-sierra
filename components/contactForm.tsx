@@ -63,7 +63,7 @@ const ContactForm = () => {
                     placeholder="email"
                   />
                   <FormHelperText>
-                    We&amp;apos;ll never share your email.
+                    We&apos;ll never share your email.
                   </FormHelperText>
                   <FormErrorMessage>{form.errors.email}</FormErrorMessage>
                 </FormControl>
