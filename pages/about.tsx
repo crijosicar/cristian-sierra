@@ -75,7 +75,7 @@ const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink color="teal.500">Career</BreadcrumbLink>
+          <BreadcrumbLink color="teal.500">About</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
       <Box height={"50px"}></Box>
@@ -92,7 +92,7 @@ const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
       {(aboutData.education || []).map(
         (education: Education, index: number) => (
           <Box ml="5" key={index}>
-            <Heading fontSize="xl">{education.institution}</Heading>
+            <Heading fontSize="md">{education.institution}</Heading>
             <Text mt={1}>
               {education.title} · {education.delivery}
             </Text>
@@ -110,7 +110,7 @@ const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
       {(aboutData.certifications || []).map(
         (certification: Certification, index: number) => (
           <Box ml="5" key={index}>
-            <Heading fontSize="xl">{certification.title}</Heading>
+            <Heading fontSize="md">{certification.title}</Heading>
             <Text mt={1}>{certification.title}</Text>
             <Text fontSize="sm">
               {" "}

@@ -6,7 +6,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Container,
+  Container, Divider,
   Flex,
   Heading,
   Link,
@@ -15,7 +15,7 @@ import {
   ListItem,
   StackDivider,
   Text,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
@@ -94,7 +94,7 @@ const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
               </List>
             </Box>
           </Flex>
-        ))}
+          ))}
       </VStack>
     </Container>
   );

@@ -1,10 +1,10 @@
 import { NextPage } from "next";
 import Head from "next/head";
-import { Button, Center, Container, Heading } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import { Box, Button, Center, Container, Heading, useBreakpointValue } from "@chakra-ui/react";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
 const Custom404: NextPage = () => {
-  const router = useRouter();
+  const variant = useBreakpointValue({ base: "solid", md: "outline" });
 
   return (
     <Container maxW="container.md">
@@ -16,16 +16,24 @@ const Custom404: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Center>
-        <Heading size="2xl">Ops! There is not anything here</Heading>{" "}
-        <Button
-          colorScheme="teal"
-          variant="outline"
-          onClick={() => router.push("/")}
-        >
-          Go home
-        </Button>
-      </Center>
+      <Box p='5'>
+        <Box>
+          <Heading size="2xl">Ops! There is not anything here.</Heading>{" "}
+        </Box>
+        <Center>
+          <Button
+            leftIcon={<ArrowBackIcon />}
+            as="a"
+            href={'/'}
+            colorScheme="teal"
+            size="md"
+            border="2px"
+            variant={variant}
+          >
+            Go to Main
+          </Button>
+        </Center>
+      </Box>
     </Container>
   );
 };
