@@ -145,6 +145,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }): Prom
   };
 
   const aboutPageProps = await db.collection("about").get();
+
   const [aboutData] = aboutPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());
   });
