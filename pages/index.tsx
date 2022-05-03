@@ -87,6 +87,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }): Prom
     'public, s-maxage=10, stale-while-revalidate=59'
   )
   const aboutPageProps = await db.collection("about").get();
+
   const [aboutData] = aboutPageProps.docs.map((doc) => doc.data());
 
   const workPageProps = await db
