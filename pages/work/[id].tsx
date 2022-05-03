@@ -171,6 +171,7 @@ const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
 export const getStaticPaths: GetStaticPaths =
   async (): Promise<GetStaticPathsResult> => {
     const workPageProps = await db.collection("work").get();
+
     const workData = workPageProps.docs.map((doc) => doc.data());
 
     const paths = workData.map((work: DocumentData) => ({

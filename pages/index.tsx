@@ -83,6 +83,7 @@ export const getServerSideProps: GetServerSideProps = async (): Promise<
   GetServerSidePropsResult<HomePageProps>
 > => {
   const aboutPageProps = await db.collection("about").get();
+
   const [aboutData] = aboutPageProps.docs.map((doc) => doc.data());
 
   const workPageProps = await db

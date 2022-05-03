@@ -13,7 +13,7 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import GetResumeBtn from "../components/resume";
 import db from "../utils/db";
-import { formatDate, formatFieldsDate } from "../utils/date";
+import { formatDate } from "../utils/date";
 import { GetServerSidePropsResult } from "next/types";
 import { DocumentData, Timestamp } from "@google-cloud/firestore";
 
@@ -141,6 +141,7 @@ export const getServerSideProps: GetServerSideProps = async (): Promise<
   };
 
   const aboutPageProps = await db.collection("about").get();
+
   const [aboutData] = aboutPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());
   });
