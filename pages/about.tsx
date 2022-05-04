@@ -7,7 +7,7 @@ import {
   BreadcrumbLink,
   Container,
   Heading,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
@@ -18,7 +18,7 @@ import { GetServerSidePropsResult } from "next/types";
 import { DocumentData, Timestamp } from "@google-cloud/firestore";
 
 type AboutPageProps = {
-  aboutData: AboutData;
+  aboutData: About;
 };
 
 export interface Social {
@@ -44,7 +44,7 @@ export interface Certification {
   title: string;
 }
 
-export interface AboutData {
+export interface About {
   id: string;
   social: Social;
   education: Education[];
@@ -57,7 +57,7 @@ export interface AboutData {
   dateOfBirth: Date;
 }
 
-const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
+const AboutPage: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
   const router = useRouter();
 
   return (
@@ -125,13 +125,14 @@ const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }): Promise<
-  GetServerSidePropsResult<AboutPageProps>
-> => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+}): Promise<GetServerSidePropsResult<AboutPageProps>> => {
   res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
-  )
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
   const formatFieldsDate = (documentData: DocumentData) => {
     const data = documentData;
     Object.keys(documentData).forEach((key) => {
@@ -157,4 +158,4 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }): Prom
   };
 };
 
-export default About;
+export default AboutPage;

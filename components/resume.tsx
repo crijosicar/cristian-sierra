@@ -1,9 +1,9 @@
 import { Box, Button, Center, useBreakpointValue } from "@chakra-ui/react";
 import { ArrowDownIcon } from "@chakra-ui/icons";
-import { useResumeUrl } from "../shared/resumeUrl/useResumeUrl";
+import { useAboutMeInfo } from "../shared/aboutMeInfo/useAboutMeInfo";
 
 const GetResumeBtn = () => {
-  const resumeUrl = useResumeUrl();
+  const aboutMeInfo = useAboutMeInfo();
   const variant = useBreakpointValue({ base: "solid", md: "outline" });
 
   return (
@@ -12,7 +12,7 @@ const GetResumeBtn = () => {
         <Button
           target={"_blank"}
           as="a"
-          href={resumeUrl}
+          href={aboutMeInfo?.resumeUrl}
           rightIcon={<ArrowDownIcon />}
           colorScheme="teal"
           size="md"

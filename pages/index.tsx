@@ -15,11 +15,11 @@ import GetResumeBtn from "../components/resume";
 import ContactForm from "../components/contactForm";
 import { GetServerSidePropsResult } from "next/types";
 import firebase from "../utils/firebase";
-import { AboutData } from "./about";
 import { Work } from "./work/[id]";
+import { About } from "./about";
 
 type HomePageProps = {
-  aboutData: AboutData;
+  aboutData: About;
   workData: Work[];
 };
 
@@ -79,13 +79,14 @@ const Home: NextPage<HomePageProps> = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }): Promise<
-  GetServerSidePropsResult<HomePageProps>
-> => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+}): Promise<GetServerSidePropsResult<HomePageProps>> => {
   res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
-  )
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
   const aboutPageProps = await firebase.db.collection("about").get();
 
   const [aboutData] = aboutPageProps.docs.map((doc) => doc.data());

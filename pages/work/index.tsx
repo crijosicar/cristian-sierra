@@ -7,6 +7,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Container,
+  Divider,
   Flex,
   Heading,
   Link,
@@ -15,7 +16,7 @@ import {
   ListItem,
   StackDivider,
   Text,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
@@ -94,19 +95,21 @@ const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
               </List>
             </Box>
           </Flex>
-          ))}
+        ))}
+        <Divider orientation="vertical" />
       </VStack>
     </Container>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }): Promise<
-  GetServerSidePropsResult<WorkPageProps>
-> => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+}): Promise<GetServerSidePropsResult<WorkPageProps>> => {
   res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
-  )
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
   const formatFieldsDate = (documentData: DocumentData) => {
     const data = documentData;
     Object.keys(documentData).forEach((key) => {
@@ -119,7 +122,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }): Prom
     return data;
   };
 
-  const workPageProps = await firebase.db.collection("work").orderBy("startDate").get();
+  const workPageProps = await firebase.db
+    .collection("work")
+    .orderBy("startDate")
+    .get();
 
   const workData = workPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());
