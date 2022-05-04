@@ -12,13 +12,13 @@ import {
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import GetResumeBtn from "../components/resume";
-import db from "../utils/db";
+import firebase from "../utils/firebase";
 import { formatDate } from "../utils/date";
 import { GetServerSidePropsResult } from "next/types";
 import { DocumentData, Timestamp } from "@google-cloud/firestore";
 
 type AboutPageProps = {
-  aboutData: AboutData;
+  aboutData: About;
 };
 
 export interface Social {
@@ -44,7 +44,7 @@ export interface Certification {
   title: string;
 }
 
-export interface AboutData {
+export interface About {
   id: string;
   social: Social;
   education: Education[];
@@ -57,7 +57,7 @@ export interface AboutData {
   dateOfBirth: Date;
 }
 
-const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
+const AboutPage: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
   const router = useRouter();
 
   return (
@@ -120,18 +120,19 @@ const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
         )
       )}
       <Box height={"20px"}></Box>
-      <GetResumeBtn resumeUrl={aboutData.resumeUrl} />
+      <GetResumeBtn />
     </Container>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }): Promise<
-  GetServerSidePropsResult<AboutPageProps>
-> => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+}): Promise<GetServerSidePropsResult<AboutPageProps>> => {
   res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
-  )
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
   const formatFieldsDate = (documentData: DocumentData) => {
     const data = documentData;
     Object.keys(documentData).forEach((key) => {
@@ -144,7 +145,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }): Prom
     return data;
   };
 
-  const aboutPageProps = await db.collection("about").get();
+  const aboutPageProps = await firebase.db.collection("about").get();
 
   const [aboutData] = aboutPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());
@@ -157,4 +158,4 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }): Prom
   };
 };
 
-export default About;
+export default AboutPage;

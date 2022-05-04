@@ -14,12 +14,12 @@ import { useRouter } from "next/router";
 import GetResumeBtn from "../components/resume";
 import ContactForm from "../components/contactForm";
 import { GetServerSidePropsResult } from "next/types";
-import db from "../utils/db";
-import { AboutData } from "./about";
+import firebase from "../utils/firebase";
 import { Work } from "./work/[id]";
+import { About } from "./about";
 
 type HomePageProps = {
-  aboutData: AboutData;
+  aboutData: About;
   workData: Work[];
 };
 
@@ -66,7 +66,7 @@ const Home: NextPage<HomePageProps> = ({
         ))}
       </Stack>
       <Box height={"20px"}></Box>
-      <GetResumeBtn resumeUrl={aboutData.resumeUrl} />
+      <GetResumeBtn />
       <Box height={"50px"}></Box>
       <Heading size="2xl">
         <Link color="teal.500" onClick={() => router.push("/contact")}>
@@ -79,18 +79,19 @@ const Home: NextPage<HomePageProps> = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }): Promise<
-  GetServerSidePropsResult<HomePageProps>
-> => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+}): Promise<GetServerSidePropsResult<HomePageProps>> => {
   res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
-  )
-  const aboutPageProps = await db.collection("about").get();
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
+  const aboutPageProps = await firebase.db.collection("about").get();
 
   const [aboutData] = aboutPageProps.docs.map((doc) => doc.data());
 
-  const workPageProps = await db
+  const workPageProps = await firebase.db
     .collection("work")
     .orderBy("startDate")
     .limit(3)
