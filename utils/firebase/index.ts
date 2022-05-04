@@ -14,4 +14,7 @@ if (!admin.apps.length) {
   }
 }
 
-export default admin.firestore();
+export default {
+  db: admin.firestore(),
+  storage: admin.storage(),
+};

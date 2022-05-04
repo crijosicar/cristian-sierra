@@ -12,7 +12,7 @@ import {
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import GetResumeBtn from "../components/resume";
-import db from "../utils/db";
+import firebase from "../utils/firebase";
 import { formatDate } from "../utils/date";
 import { GetServerSidePropsResult } from "next/types";
 import { DocumentData, Timestamp } from "@google-cloud/firestore";
@@ -120,7 +120,7 @@ const About: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
         )
       )}
       <Box height={"20px"}></Box>
-      <GetResumeBtn resumeUrl={aboutData.resumeUrl} />
+      <GetResumeBtn />
     </Container>
   );
 };
@@ -144,7 +144,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }): Prom
     return data;
   };
 
-  const aboutPageProps = await db.collection("about").get();
+  const aboutPageProps = await firebase.db.collection("about").get();
 
   const [aboutData] = aboutPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());

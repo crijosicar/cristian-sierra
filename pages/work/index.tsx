@@ -6,7 +6,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Container, Divider,
+  Container,
   Flex,
   Heading,
   Link,
@@ -21,7 +21,7 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { MdCheckCircle } from "react-icons/md";
 import { GetServerSidePropsResult } from "next/types";
-import db from "../../utils/db";
+import firebase from "../../utils/firebase";
 import { Work } from "./[id]";
 import { calculateElapsedTime, formatDate } from "../../utils/date";
 import { DocumentData, Timestamp } from "@google-cloud/firestore";
@@ -119,7 +119,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }): Prom
     return data;
   };
 
-  const workPageProps = await db.collection("work").orderBy("startDate").get();
+  const workPageProps = await firebase.db.collection("work").orderBy("startDate").get();
 
   const workData = workPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());

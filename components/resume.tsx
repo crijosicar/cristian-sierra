@@ -1,7 +1,9 @@
 import { Box, Button, Center, useBreakpointValue } from "@chakra-ui/react";
 import { ArrowDownIcon } from "@chakra-ui/icons";
+import { useResumeUrl } from "../shared/resumeUrl/useResumeUrl";
 
-const GetResumeBtn = ({ resumeUrl }: { resumeUrl: string }) => {
+const GetResumeBtn = () => {
+  const resumeUrl = useResumeUrl();
   const variant = useBreakpointValue({ base: "solid", md: "outline" });
 
   return (

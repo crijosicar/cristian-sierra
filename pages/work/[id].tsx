@@ -22,7 +22,7 @@ import {
   GetStaticPathsResult,
   GetStaticProps,
 } from "next/types";
-import db from "../../utils/db";
+import firebase from "../../utils/firebase";
 import { firestore } from "firebase-admin";
 import { calculateElapsedTime, formatDate } from "../../utils/date";
 import { Timestamp } from "@google-cloud/firestore";
@@ -170,7 +170,7 @@ const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
 
 export const getStaticPaths: GetStaticPaths =
   async (): Promise<GetStaticPathsResult> => {
-    const workPageProps = await db.collection("work").get();
+    const workPageProps = await firebase.db.collection("work").get();
 
     const workData = workPageProps.docs.map((doc) => doc.data());
 
@@ -196,7 +196,7 @@ export const getStaticProps: GetStaticProps = async ({
     return data;
   };
 
-  const workPageProps = await db
+  const workPageProps = await firebase.db
     .collection("work")
     .where("slug", "==", params!.id)
     .get();

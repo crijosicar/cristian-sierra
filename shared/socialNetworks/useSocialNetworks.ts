@@ -14,7 +14,7 @@ export const useSocialNetworks = (): Social=> {
       const aboutData = await fetch(`${process.env.apiURL}/api/about`);
       const socialNetworks = await aboutData.json();
 
-      setSocialNetworks(socialNetworks);
+      setSocialNetworks(socialNetworks.social);
     }
 
     fetchSocialNetworks().catch(console.error);
