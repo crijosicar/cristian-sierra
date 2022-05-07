@@ -31,7 +31,7 @@ export default async function handler(
         template: "portfoliositecontactform",
         "h:X-Mailgun-Variables": JSON.stringify(body),
       };
-
+      
       mg.messages
         .create(mailgunDomain!, data)
         .then((msg) => console.log("msg", msg))
