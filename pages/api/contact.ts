@@ -37,7 +37,7 @@ export default async function handler(
         .then((msg) => console.log("msg", msg))
         .catch((err) => console.log("error", err));
 
-      res.status(200).json({});
+      res.status(200).json({ message: "Success" });
       break;
     default:
       res.setHeader("Allow", ["POST"]);
