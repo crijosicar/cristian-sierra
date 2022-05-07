@@ -9,7 +9,7 @@ const Custom500: NextPage = () => {
   return (
     <Container maxW="container.md">
       <Head>
-        <title>Not found - Cristian Sierra</title>
+        <title>Server Error - Cristian Sierra</title>
         <meta
           name="description"
           content="Cristian Sierra - Software Engineer"

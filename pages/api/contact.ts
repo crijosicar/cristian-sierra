@@ -29,7 +29,7 @@ export default async function handler(
         to: personalEmail,
         subject: "Portfolio Site Contact Form",
         template: "portfoliositecontactform",
-        "h:X-Mailgun-Variables": JSON.stringify({ test: "test" }),
+        "h:X-Mailgun-Variables": JSON.stringify(body),
       };
       
       mg.messages
