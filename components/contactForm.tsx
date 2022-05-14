@@ -9,6 +9,9 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
+import { isEmpty, set } from "lodash";
+import axios from "axios";
+import { FormikHelpers } from "formik/dist/types";
 
 interface ContactFormFields {
   email: string;
@@ -20,19 +23,27 @@ const ContactForm = () => {
   const onValidate = (contactFormFields: ContactFormFields) => {
     const errors = {};
 
-    if (!contactFormFields.email) {
-      Object.assign(errors, { email: "Required" });
+    if (isEmpty(contactFormFields.email)) {
+      set(errors, "email", "Required");
     } else if (
       !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(contactFormFields.email)
     ) {
-      Object.assign(errors, { email: "Invalid email address" });
+      set(errors, "email", "Invalid email address");
     }
 
-    if (!contactFormFields.message) {
-      Object.assign(errors, { message: "Required" });
+    if (isEmpty(contactFormFields.message)) {
+      set(errors, "message", "Required");
     }
 
     return errors;
+  };
+  const onSubmit = async (
+    contactFormFields: ContactFormFields,
+    { setSubmitting, resetForm }: FormikHelpers<ContactFormFields>
+  ) => {
+    await axios.post(`${process.env.apiURL}/api/contact`, contactFormFields);
+    setSubmitting(false);
+    resetForm();
   };
 
   return (
@@ -40,16 +51,11 @@ const ContactForm = () => {
       <Formik
         validate={onValidate}
         initialValues={initialValues}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 1000);
-        }}
+        onSubmit={onSubmit}
       >
         {({ isSubmitting }) => (
           <Form>
-            <Field name="name">
+            <Field name="email">
               {({ field, form }: Record<string, any>) => (
                 <FormControl
                   isRequired
@@ -58,7 +64,7 @@ const ContactForm = () => {
                   <FormLabel htmlFor="email">Email</FormLabel>
                   <Input
                     {...field}
-                    id="name"
+                    id="email"
                     type={"email"}
                     placeholder="email"
                   />
@@ -76,7 +82,7 @@ const ContactForm = () => {
                   isRequired
                   isInvalid={form.errors.message && form.touched.message}
                 >
-                  <FormLabel htmlFor="email">Message</FormLabel>
+                  <FormLabel htmlFor="message">Message</FormLabel>
                   <Textarea
                     {...field}
                     id="message"

@@ -3,7 +3,7 @@ import formData from "form-data";
 
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({
-  username: "api",
+  username: process.env.mailgunUsername!,
   key: process.env.mailgunApiKey!,
 });
 

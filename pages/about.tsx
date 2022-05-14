@@ -16,6 +16,8 @@ import firebase from "../utils/firebase";
 import { formatDate } from "../utils/date";
 import { GetServerSidePropsResult } from "next/types";
 import { DocumentData, Timestamp } from "@google-cloud/firestore";
+import { MdCheckCircle } from "react-icons/md";
+import { orderBy } from "lodash";
 
 type AboutPageProps = {
   aboutData: About;
@@ -42,6 +44,7 @@ export interface Certification {
   issuedAt: Date;
   issuingOrganization: string;
   title: string;
+  country?: string;
 }
 
 export interface About {
@@ -59,6 +62,16 @@ export interface About {
 
 const AboutPage: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
   const router = useRouter();
+  const sortedEducationData = orderBy(
+    aboutData.education,
+    ["endDate", "startDate"],
+    ["desc", "desc"]
+  );
+  const sortedCertifications = orderBy(
+    aboutData.certifications,
+    ["endDate", "startDate"],
+    ["desc", "desc"]
+  );
 
   return (
     <Container maxW="container.md">
@@ -88,34 +101,36 @@ const AboutPage: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
       </Text>
       <Box height={"20px"}></Box>
       <Heading fontSize="xl">{"Education"}</Heading>
-      <Box height={"20px"}></Box>
-      {(aboutData.education || []).map(
-        (education: Education, index: number) => (
-          <Box ml="5" key={index}>
+      <Box height={"15px"}></Box>
+      {sortedEducationData.map((education: Education, index: number) => (
+        <Box display="flex" alignItems="baseline" key={index}>
+          <Box as={MdCheckCircle} color="teal"></Box>
+          <Box ml="2" mb={"5"}>
             <Heading fontSize="md">{education.institution}</Heading>
             <Text mt={1}>
-              {education.title} · {education.delivery}
+              {education.title} · {education.credential}
             </Text>
-            <Text fontSize="sm">
+            <Text>
               {formatDate(education.startDate)} -{" "}
-              {formatDate(education.endDate)}
+              {education.endDate ? formatDate(education.endDate) : "Ongoing"}
             </Text>
-            <Text mt={1}>{education.country}</Text>
+            <Text fontSize="sm">{education.country}</Text>
           </Box>
-        )
-      )}
-      <Box height={"20px"}></Box>
+        </Box>
+      ))}
+      <Box height={"10px"}></Box>
       <Heading fontSize="xl">{"Courses and Certifications"}</Heading>
-      <Box height={"20px"}></Box>
-      {(aboutData.certifications || []).map(
+      <Box height={"15px"}></Box>
+      {sortedCertifications.map(
         (certification: Certification, index: number) => (
-          <Box ml="5" key={index}>
-            <Heading fontSize="md">{certification.title}</Heading>
-            <Text mt={1}>{certification.title}</Text>
-            <Text fontSize="sm">
-              {" "}
-              Issued at {formatDate(certification.issuedAt)}{" "}
-            </Text>
+          <Box display="flex" alignItems="baseline" key={index}>
+            <Box as={MdCheckCircle} color="teal"></Box>
+            <Box ml="2" mb={"5"}>
+              <Heading fontSize="md">{certification.title}</Heading>
+              <Text mt={1}>{certification.issuingOrganization}</Text>
+              <Text> Issued at {formatDate(certification.issuedAt)} </Text>
+              <Text fontSize="sm">{certification.country}</Text>
+            </Box>
           </Box>
         )
       )}
