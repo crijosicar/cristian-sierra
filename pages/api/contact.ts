@@ -2,22 +2,22 @@ import { isEmpty } from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
 import mg from "../../utils/mailgun";
 
-const isPayloadValid = (body: Record<string, any>): boolean => {
-  if (isEmpty(body)) {
-    return false;
-  }
+type ContactFormResponse = {
+  message: string;
+};
 
-  return !isEmpty(body.email) || !isEmpty(body.message);
+const isPayloadValid = (body: Record<string, any>): boolean => {
+  return !isEmpty(body) && !isEmpty(body.email) && !isEmpty(body.message);
 };
 
 export default async function handler(
   { method, body }: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<ContactFormResponse>
 ) {
   switch (method) {
     case "POST":
       if (!isPayloadValid(body)) {
-        return res.status(400).json({});
+        return res.status(400).json({ message: "Invalid request" });
       }
 
       const mailgunDomain = process.env.mailgunDomain;
@@ -31,12 +31,12 @@ export default async function handler(
         template: "portfoliositecontactform",
         "h:X-Mailgun-Variables": JSON.stringify(body),
       };
-      
+
       mg.messages
         .create(mailgunDomain!, data)
         .then((msg) => console.log("msg", msg))
         .catch((err) => console.log("error", err));
-
+      
       res.status(200).json({ message: "Success" });
       break;
     default:
