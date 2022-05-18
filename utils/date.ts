@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Work } from "../pages/work/[id]";
+import { Work } from "../entities/work";
 
 export const formatDate = (date: moment.MomentInput): string => {
   return moment(date).format("MMM yyyy");
