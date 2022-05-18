@@ -46,7 +46,7 @@ const sortClientsWorkDataByDate = (clients: Client[]): Client[] => {
         projects: orderBy(
           sortedClientData.projects,
           ["endDate", "startDate"],
-          ["desc", "desc"]
+          ["asc", "asc"]
         )
       }
     )
@@ -56,8 +56,6 @@ const sortClientsWorkDataByDate = (clients: Client[]): Client[] => {
 const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
   const router = useRouter();
   const sortedWorkClientsData = sortClientsWorkDataByDate(work.clients);
-  // console.log(work);
-  console.log(sortedWorkClientsData);
 
   return (
     <Container maxW="container.md">
@@ -191,9 +189,7 @@ export const getStaticPaths: GetStaticPaths =
     return { paths, fallback: false };
   };
 
-export const getStaticProps: GetStaticProps = async ({
-                                                       params,
-                                                     }): Promise<GetStaticPropsResult<{ work: Work }>> => {
+export const getStaticProps: GetStaticProps = async ({params }): Promise<GetStaticPropsResult<WorkPageProps>> => {
   const formatFieldsDate = (documentData: DocumentData) => {
     const data = documentData;
     Object.keys(documentData).forEach((key) => {
