@@ -34,9 +34,9 @@ export default async function handler(
 
       mg.messages
         .create(mailgunDomain!, data)
-        .then((msg) => console.log("msg", msg))
-        .catch((err) => console.log("error", err));
-      
+        .then((msg: any) => console.log("msg", msg))
+        .catch((err: any) => console.log("error", err));
+
       res.status(200).json({ message: "Success" });
       break;
     default:

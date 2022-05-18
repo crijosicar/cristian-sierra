@@ -11,8 +11,10 @@ import {
   List,
   ListIcon,
   ListItem,
+  StackDivider,
   Tag,
   Text,
+  VStack,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { ChevronRightIcon } from "@chakra-ui/icons";
@@ -26,44 +28,34 @@ import firebase from "../../utils/firebase";
 import { firestore } from "firebase-admin";
 import { calculateElapsedTime, formatDate } from "../../utils/date";
 import { Timestamp } from "@google-cloud/firestore";
+import { Work } from "../../entities/work";
+import { Client } from "../../entities/client";
+import { Project } from "../../entities/project";
+import { isEmpty, orderBy } from "lodash";
 import DocumentData = firestore.DocumentData;
 
 type WorkPageProps = {
   work: Work;
 };
 
-export interface Project {
-  startDate: Date;
-  technologies: string[];
-  endDate: Date;
-  commitments: string[];
-  projectName: string;
-}
-
-export interface Client {
-  startDate: Date;
-  clientName: string;
-  endDate: Date;
-  projects: Project[];
-}
-
-export interface Work {
-  id: string;
-  slug: string;
-  clients: Client[];
-  summary: string;
-  contractType: string;
-  companyIcon: string;
-  startDate: Date;
-  endDate: Date;
-  position: string;
-  commitments: string[];
-  companyName: string;
-  location: string;
-}
+const sortClientsWorkDataByDate = (clients: Client[]): Client[] => {
+  return orderBy(clients, ["endDate", "startDate"], ["desc", "desc"]).map(
+    (sortedClientData: Client) => (
+      {
+        ...sortedClientData,
+        projects: orderBy(
+          sortedClientData.projects,
+          ["endDate", "startDate"],
+          ["asc", "asc"]
+        )
+      }
+    )
+  );
+};
 
 const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
   const router = useRouter();
+  const sortedWorkClientsData = sortClientsWorkDataByDate(work.clients);
 
   return (
     <Container maxW="container.md">
@@ -91,7 +83,7 @@ const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
         {work.companyName}
       </Heading>
       <Box height={"10px"}></Box>
-      <Box ml="3">
+      <Box>
         <Heading fontSize="xl">{work.position}</Heading>
         <Text fontSize="sm">
           {formatDate(work.startDate)} -{" "}
@@ -100,21 +92,36 @@ const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
         </Text>
         <Text fontSize="sm">{work.location}</Text>
         <Box height={"20px"}></Box>
-        <Heading fontSize="xl">{"Commitments"}</Heading>
+        <Heading fontSize="xl">{"Summary"}</Heading>
         <Box height={"10px"}></Box>
-        <List spacing={3}>
-          {(work.commitments || []).map((commitment: string, index: number) => (
-            <ListItem key={index}>
-              <ListIcon as={MdCheckCircle} color="green.500" />
-              {commitment}
-            </ListItem>
-          ))}
-        </List>
+        <Text>{work.summary}</Text>
+        {!isEmpty(work.commitments) && (
+          <>
+            <Box height={"20px"}></Box>
+            <Heading fontSize="xl">{"Commitments"}</Heading>
+            <Box height={"10px"}></Box>
+            <List spacing={3}>
+              {(work.commitments || []).map(
+                (commitment: string, index: number) => (
+                  <ListItem key={index}>
+                    <ListIcon as={MdCheckCircle} color="teal" />
+                    {commitment}
+                  </ListItem>
+                )
+              )}
+            </List>
+          </>
+        )}
         <Box height={"20px"}></Box>
         <Heading fontSize="xl">{"Projects"}</Heading>
-        <HStack spacing={4}>
-          {(work.clients || []).map((client: Client, clientIndex: number) => (
-            <Box key={clientIndex}>
+        {(sortedWorkClientsData || []).map(
+          (client: Client, clientIndex: number) => (
+            <VStack
+              key={clientIndex}
+              divider={<StackDivider borderColor="teal.100" />}
+              spacing={4}
+              align="stretch"
+            >
               {(client.projects || []).map(
                 (project: Project, projectIndex: number) => (
                   <Box key={projectIndex}>
@@ -129,12 +136,11 @@ const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
                     </Text>
                     <Box height={"10px"}></Box>
                     <Box>
-                      <Text>Commitments: </Text>
                       <List spacing={3}>
                         {(project.commitments || []).map(
                           (commitment: string, commitmentIndex: number) => (
                             <ListItem key={commitmentIndex}>
-                              <ListIcon as={MdCheckCircle} color="green.500" />
+                              <ListIcon as={MdCheckCircle} color="teal" />
                               {commitment}
                             </ListItem>
                           )
@@ -143,26 +149,28 @@ const WorkPage: NextPage<WorkPageProps> = ({ work }: WorkPageProps) => {
                     </Box>
                     <Box height={"10px"}></Box>
                     <Box>
-                      <Text>Technologies: </Text>
-                      {(project.technologies || []).map(
-                        (technology: string, technologyIndex: number) => (
-                          <Tag
-                            key={technologyIndex}
-                            size={"md"}
-                            variant="solid"
-                            colorScheme="teal"
-                          >
-                            {technology}
-                          </Tag>
-                        )
-                      )}
+                      <Text>Skills: </Text>
+                      <HStack spacing={4}>
+                        {(project.technologies || []).map(
+                          (technology: string, technologyIndex: number) => (
+                            <Tag
+                              key={technologyIndex}
+                              size={"md"}
+                              variant="solid"
+                              colorScheme="teal"
+                            >
+                              {technology}
+                            </Tag>
+                          )
+                        )}
+                      </HStack>
                     </Box>
                   </Box>
                 )
               )}
-            </Box>
-          ))}
-        </HStack>
+            </VStack>
+          )
+        )}
       </Box>
     </Container>
   );
@@ -181,9 +189,7 @@ export const getStaticPaths: GetStaticPaths =
     return { paths, fallback: false };
   };
 
-export const getStaticProps: GetStaticProps = async ({
-  params,
-}): Promise<GetStaticPropsResult<{ work: Work }>> => {
+export const getStaticProps: GetStaticProps = async ({params }): Promise<GetStaticPropsResult<WorkPageProps>> => {
   const formatFieldsDate = (documentData: DocumentData) => {
     const data = documentData;
     Object.keys(documentData).forEach((key) => {

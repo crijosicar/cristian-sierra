@@ -1,6 +1,6 @@
 import { Box, Button, Center, useBreakpointValue } from "@chakra-ui/react";
 import { ArrowDownIcon } from "@chakra-ui/icons";
-import { useAboutMeInfo } from "../shared/aboutMeInfo/useAboutMeInfo";
+import { useAboutMeInfo } from "../shared/useAboutMeInfo";
 
 const GetResumeBtn = () => {
   const aboutMeInfo = useAboutMeInfo();
