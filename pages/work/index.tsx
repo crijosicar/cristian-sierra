@@ -23,9 +23,9 @@ import { useRouter } from "next/router";
 import { MdCheckCircle } from "react-icons/md";
 import { GetServerSidePropsResult } from "next/types";
 import firebase from "../../utils/firebase";
-import { Work } from "./[id]";
 import { calculateElapsedTime, formatDate } from "../../utils/date";
 import { DocumentData, Timestamp } from "@google-cloud/firestore";
+import { Work } from "../../entities/work";
 
 type WorkPageProps = {
   workData: Work[];
@@ -122,10 +122,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     return data;
   };
 
-  const workPageProps = await firebase.db
-    .collection("work")
-    .orderBy("startDate")
-    .get();
+  const workPageProps = await firebase.db.collection("work").get();
 
   const workData = workPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());

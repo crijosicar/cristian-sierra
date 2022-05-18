@@ -1,6 +1,6 @@
 import { Box, ButtonGroup, IconButton, Stack } from "@chakra-ui/react";
 import { FaGithub, FaLinkedin, FaMailBulk, FaTwitter } from "react-icons/fa";
-import { useAboutMeInfo } from "../shared/aboutMeInfo/useAboutMeInfo";
+import { useAboutMeInfo } from "../shared/useAboutMeInfo";
 
 const Social = () => {
   const aboutMeInfo = useAboutMeInfo();
