@@ -37,11 +37,13 @@ const ContactForm = () => {
 
     return errors;
   };
+
   const onSubmit = async (
     contactFormFields: ContactFormFields,
     { setSubmitting, resetForm }: FormikHelpers<ContactFormFields>
   ) => {
     await axios.post(`${process.env.apiURL}/api/contact`, contactFormFields);
+    
     setSubmitting(false);
     resetForm();
   };

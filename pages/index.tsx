@@ -15,10 +15,10 @@ import GetResumeBtn from "../components/resume";
 import ContactForm from "../components/contactForm";
 import { GetServerSidePropsResult } from "next/types";
 import firebase from "../utils/firebase";
-import { About } from "./about";
-import { orderBy } from "lodash";
-import { DocumentData, Timestamp } from "@google-cloud/firestore";
+import { About } from "../entities/about";
 import { Work } from "../entities/work";
+import { orderBy } from "lodash";
+import { formatFieldsDate } from "../utils/date";
 
 type HomePageProps = {
   aboutData: About;
@@ -34,11 +34,6 @@ const Home: NextPage<HomePageProps> = ({
     base: "column" as any,
     md: "row" as any,
   });
-  const sortedWorkData = orderBy(
-    workData,
-    ["endDate", "startDate"],
-    ["desc", "desc"]
-  );
 
   return (
     <Container maxW="container.md">
@@ -68,7 +63,7 @@ const Home: NextPage<HomePageProps> = ({
       </Heading>
       <Box height={"20px"}></Box>
       <Stack direction={direction}>
-        {sortedWorkData.map((work: Work, index: number) => (
+        {workData.map((work: Work, index: number) => (
           <WorkHome key={index} work={work} />
         ))}
       </Stack>
@@ -86,36 +81,32 @@ const Home: NextPage<HomePageProps> = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  res,
-}): Promise<GetServerSidePropsResult<HomePageProps>> => {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=10, stale-while-revalidate=59"
-  );
-  const formatFieldsDate = (documentData: DocumentData) => {
-    const data = documentData;
-    Object.keys(documentData).forEach((key) => {
-      if (data[key] instanceof Timestamp) {
-        data[key] = data[key].toDate();
-      } else if (typeof data[key] === "object") {
-        formatFieldsDate(documentData[key]);
-      }
-    });
-    return data;
-  };
+export const getServerSideProps: GetServerSideProps = async (): Promise<
+  GetServerSidePropsResult<HomePageProps>
+> => {
   const aboutPageProps = await firebase.db.collection("about").get();
+
   const [aboutData] = aboutPageProps.docs.map((doc) => doc.data());
-  const workPageProps = await firebase.db.collection("work").limit(3).get();
+
+  const workPageProps = await firebase.db
+    .collection("work")
+    .orderBy("startDate", "desc")
+    .limit(3)
+    .get();
+
   const workData = workPageProps.docs.map((doc) =>
     formatFieldsDate(doc.data())
+  );
+  const sortedWorkData = orderBy(
+    workData,
+    ["endDate", "startDate"],
+    ["desc", "desc"]
   );
 
   return {
     props: {
       aboutData: JSON.parse(JSON.stringify(aboutData)),
-      workData: JSON.parse(JSON.stringify(workData)),
+      workData: JSON.parse(JSON.stringify(sortedWorkData)),
     },
   };
 };

@@ -23,8 +23,11 @@ import { useRouter } from "next/router";
 import { MdCheckCircle } from "react-icons/md";
 import { GetServerSidePropsResult } from "next/types";
 import firebase from "../../utils/firebase";
-import { calculateElapsedTime, formatDate } from "../../utils/date";
-import { DocumentData, Timestamp } from "@google-cloud/firestore";
+import {
+  calculateElapsedTime,
+  formatDate,
+  formatFieldsDate,
+} from "../../utils/date";
 import { Work } from "../../entities/work";
 
 type WorkPageProps = {
@@ -105,18 +108,6 @@ const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
 export const getServerSideProps: GetServerSideProps = async (): Promise<
   GetServerSidePropsResult<WorkPageProps>
 > => {
-  const formatFieldsDate = (documentData: DocumentData) => {
-    const data = documentData;
-    Object.keys(documentData).forEach((key) => {
-      if (data[key] instanceof Timestamp) {
-        data[key] = data[key].toDate();
-      } else if (typeof data[key] === "object") {
-        formatFieldsDate(documentData[key]);
-      }
-    });
-    return data;
-  };
-
   const workPageProps = await firebase.db
     .collection("work")
     .orderBy("startDate", "desc")

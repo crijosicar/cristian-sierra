@@ -13,65 +13,20 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import GetResumeBtn from "../components/resume";
 import firebase from "../utils/firebase";
-import { formatDate } from "../utils/date";
+import { formatDate, formatFieldsDate } from "../utils/date";
 import { GetServerSidePropsResult } from "next/types";
-import { DocumentData, Timestamp } from "@google-cloud/firestore";
 import { MdCheckCircle } from "react-icons/md";
 import { orderBy } from "lodash";
+import { About } from "../entities/about";
+import { Certification } from "../entities/certification";
+import { Education } from "../entities/education";
 
 type AboutPageProps = {
   aboutData: About;
 };
 
-export interface Social {
-  github: string;
-  linkedin: string;
-  email: string;
-  twitter: string;
-}
-
-export interface Education {
-  country: string;
-  institution: string;
-  credential: string;
-  endDate: Date;
-  startDate: Date;
-  title: string;
-  delivery: string;
-}
-
-export interface Certification {
-  issuedAt: Date;
-  issuingOrganization: string;
-  title: string;
-  country?: string;
-}
-
-export interface About {
-  id: string;
-  social: Social;
-  education: Education[];
-  summary: string;
-  certifications: Certification[];
-  currentLocation: string;
-  citizenship: string;
-  resumeUrl: string;
-  fullName: string;
-  dateOfBirth: Date;
-}
-
 const AboutPage: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
   const router = useRouter();
-  const sortedEducationData = orderBy(
-    aboutData.education,
-    ["endDate", "startDate"],
-    ["desc", "desc"]
-  );
-  const sortedCertifications = orderBy(
-    aboutData.certifications,
-    ["endDate", "startDate"],
-    ["desc", "desc"]
-  );
 
   return (
     <Container maxW="container.md">
@@ -102,7 +57,7 @@ const AboutPage: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
       <Box height={"20px"}></Box>
       <Heading fontSize="xl">{"Education"}</Heading>
       <Box height={"15px"}></Box>
-      {sortedEducationData.map((education: Education, index: number) => (
+      {aboutData.education.map((education: Education, index: number) => (
         <Box display="flex" alignItems="baseline" key={index}>
           <Box as={MdCheckCircle} color="teal"></Box>
           <Box ml="2" mb={"5"}>
@@ -121,7 +76,7 @@ const AboutPage: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
       <Box height={"10px"}></Box>
       <Heading fontSize="xl">{"Courses and Certifications"}</Heading>
       <Box height={"15px"}></Box>
-      {sortedCertifications.map(
+      {aboutData.certifications.map(
         (certification: Certification, index: number) => (
           <Box display="flex" alignItems="baseline" key={index}>
             <Box as={MdCheckCircle} color="teal"></Box>
@@ -140,35 +95,35 @@ const AboutPage: NextPage<AboutPageProps> = ({ aboutData }: AboutPageProps) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  res,
-}): Promise<GetServerSidePropsResult<AboutPageProps>> => {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=10, stale-while-revalidate=59"
-  );
-  const formatFieldsDate = (documentData: DocumentData) => {
-    const data = documentData;
-    Object.keys(documentData).forEach((key) => {
-      if (data[key] instanceof Timestamp) {
-        data[key] = data[key].toDate();
-      } else if (typeof data[key] === "object") {
-        formatFieldsDate(documentData[key]);
-      }
-    });
-    return data;
-  };
-
+export const getServerSideProps: GetServerSideProps = async (): Promise<
+  GetServerSidePropsResult<AboutPageProps>
+> => {
   const aboutPageProps = await firebase.db.collection("about").get();
 
   const [aboutData] = aboutPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());
   });
 
+  const sortedEducationData = orderBy(
+    aboutData.education,
+    ["endDate", "startDate"],
+    ["desc", "desc"]
+  );
+  const sortedCertifications = orderBy(
+    aboutData.certifications,
+    ["endDate", "startDate"],
+    ["desc", "desc"]
+  );
+
   return {
     props: {
-      aboutData: JSON.parse(JSON.stringify(aboutData)),
+      aboutData: JSON.parse(
+        JSON.stringify({
+          ...aboutData,
+          education: sortedEducationData,
+          certifications: sortedCertifications,
+        })
+      ),
     },
   };
 };

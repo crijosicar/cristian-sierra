@@ -1,5 +1,10 @@
 import { useRouter } from "next/router";
-import { GetStaticPropsResult, NextPage } from "next";
+import {
+  GetStaticPaths,
+  GetStaticPathsResult,
+  GetStaticPropsResult,
+  NextPage,
+} from "next";
 import {
   Box,
   Breadcrumb,
@@ -19,19 +24,18 @@ import {
 import Head from "next/head";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { MdCheckCircle } from "react-icons/md";
-import {
-  GetStaticPaths,
-  GetStaticPathsResult,
-  GetStaticProps,
-} from "next/types";
+import { GetStaticProps } from "next/types";
 import firebase from "../../utils/firebase";
-import { firestore } from "firebase-admin";
-import { calculateElapsedTime, formatDate } from "../../utils/date";
-import { Timestamp } from "@google-cloud/firestore";
+import {
+  calculateElapsedTime,
+  formatDate,
+  formatFieldsDate,
+} from "../../utils/date";
 import { Work } from "../../entities/work";
 import { Client } from "../../entities/client";
 import { Project } from "../../entities/project";
 import { isEmpty, orderBy } from "lodash";
+import { firestore } from "firebase-admin";
 import DocumentData = firestore.DocumentData;
 
 type WorkPageProps = {
@@ -40,16 +44,14 @@ type WorkPageProps = {
 
 const sortClientsWorkDataByDate = (clients: Client[]): Client[] => {
   return orderBy(clients, ["endDate", "startDate"], ["desc", "desc"]).map(
-    (sortedClientData: Client) => (
-      {
-        ...sortedClientData,
-        projects: orderBy(
-          sortedClientData.projects,
-          ["endDate", "startDate"],
-          ["asc", "asc"]
-        )
-      }
-    )
+    (sortedClientData: Client) => ({
+      ...sortedClientData,
+      projects: orderBy(
+        sortedClientData.projects,
+        ["endDate", "startDate"],
+        ["asc", "asc"]
+      ),
+    })
   );
 };
 
@@ -181,7 +183,6 @@ export const getStaticPaths: GetStaticPaths =
     const workPageProps = await firebase.db.collection("work").get();
 
     const workData = workPageProps.docs.map((doc) => doc.data());
-
     const paths = workData.map((work: DocumentData) => ({
       params: { id: work.slug },
     }));
@@ -189,22 +190,13 @@ export const getStaticPaths: GetStaticPaths =
     return { paths, fallback: false };
   };
 
-export const getStaticProps: GetStaticProps = async ({params }): Promise<GetStaticPropsResult<WorkPageProps>> => {
-  const formatFieldsDate = (documentData: DocumentData) => {
-    const data = documentData;
-    Object.keys(documentData).forEach((key) => {
-      if (data[key] instanceof Timestamp) {
-        data[key] = data[key].toDate();
-      } else if (typeof data[key] === "object") {
-        formatFieldsDate(documentData[key]);
-      }
-    });
-    return data;
-  };
-
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}): Promise<GetStaticPropsResult<WorkPageProps>> => {
   const workPageProps = await firebase.db
     .collection("work")
     .where("slug", "==", params!.id)
+    .limit(1)
     .get();
 
   const [workData] = workPageProps.docs.map((doc) => {
