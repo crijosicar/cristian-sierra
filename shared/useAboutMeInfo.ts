@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { About } from "../pages/about";
+import { About } from "../entities/about";
 
 export const useAboutMeInfo = (): About | undefined => {
   const [aboutMeInfo, setAboutMeInfo] = useState<About>();
