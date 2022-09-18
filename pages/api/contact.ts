@@ -21,7 +21,6 @@ export default async function handler(
   switch (method) {
     case "POST":
       await schema.validateAsync(body);
-      //res.status(400).json({ message: "Invalid request" });
 
       const mailgunDomain = process.env.mailgunDomain;
       const personalEmail = process.env.personalEmail;
