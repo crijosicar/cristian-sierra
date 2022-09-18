@@ -14,7 +14,9 @@ if (!admin.apps.length) {
   }
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   db: admin.firestore(),
   storage: admin.storage(),
+  remoteConfig: admin.remoteConfig(),
 };

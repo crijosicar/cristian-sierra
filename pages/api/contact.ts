@@ -1,14 +1,18 @@
-import { isEmpty } from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
 import mg from "../../utils/mailgun";
+import Joi from "joi";
 
 type ContactFormResponse = {
   message: string;
 };
 
-const isPayloadValid = (body: Record<string, any>): boolean => {
-  return !isEmpty(body) && !isEmpty(body.email) && !isEmpty(body.message);
-};
+const schema = Joi.object({
+  email: Joi.string().email({
+    minDomainSegments: 2,
+    tlds: { allow: ["com", "net"] },
+  }),
+  message: Joi.string().required(),
+});
 
 export default async function handler(
   { method, body }: NextApiRequest,
@@ -16,9 +20,8 @@ export default async function handler(
 ) {
   switch (method) {
     case "POST":
-      if (!isPayloadValid(body)) {
-        return res.status(400).json({ message: "Invalid request" });
-      }
+      await schema.validateAsync(body);
+      //res.status(400).json({ message: "Invalid request" });
 
       const mailgunDomain = process.env.mailgunDomain;
       const personalEmail = process.env.personalEmail;

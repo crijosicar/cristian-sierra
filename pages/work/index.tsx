@@ -102,14 +102,9 @@ const Index: NextPage<WorkPageProps> = ({ workData }: WorkPageProps) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  res,
-}): Promise<GetServerSidePropsResult<WorkPageProps>> => {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=10, stale-while-revalidate=59"
-  );
+export const getServerSideProps: GetServerSideProps = async (): Promise<
+  GetServerSidePropsResult<WorkPageProps>
+> => {
   const formatFieldsDate = (documentData: DocumentData) => {
     const data = documentData;
     Object.keys(documentData).forEach((key) => {
@@ -122,7 +117,10 @@ export const getServerSideProps: GetServerSideProps = async ({
     return data;
   };
 
-  const workPageProps = await firebase.db.collection("work").get();
+  const workPageProps = await firebase.db
+    .collection("work")
+    .orderBy("startDate", "desc")
+    .get();
 
   const workData = workPageProps.docs.map((doc) => {
     return formatFieldsDate(doc.data());
